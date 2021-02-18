@@ -1,5 +1,7 @@
 let ctx = canv.getContext("2d");
 let scale = 1;
+let plotBorderWidth = 2;
+let plotInfillWidth = 0.5;
 
 var global = {
 	scale	: 1,
@@ -130,14 +132,17 @@ function drawArrow(ctx, x, y, force, angle) {
 function drawMoments(ctx, x, y, steps, shears, graphScale) {
   ctx.beginPath();
   ctx.strokeStyle = "red";
-  ctx.lineWidth = 1;
-  ctx.moveTo(x, y)
+  ctx.lineWidth = plotBorderWidth;
+  ctx.moveTo(x, y);
   for (let i=0; i <= 1000; i++) {
     ctx.lineTo(x + steps[i] * scale, y + (beam.leftReactions.moment + shears[i]) * graphScale * scale)
   }
-  ctx.lineTo(x + steps[PRECISION] * scale, y)
+  ctx.lineTo(x + steps[PRECISION] * scale, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.lineWidth = plotInfillWidth;
   for (let i = 0; i <= 1000; i++) {
-    if (i%50 == 0) {
+    if (i%60 == 0) {
       ctx.moveTo(x+steps[i] * scale, y + (beam.leftReactions.moment + shears[i]) * graphScale * scale)
       ctx.lineTo(x+steps[i] * scale, y)
     }
@@ -148,14 +153,17 @@ function drawMoments(ctx, x, y, steps, shears, graphScale) {
 function drawShears(ctx, x, y, steps, shears, graphScale) {
   ctx.beginPath();
   ctx.strokeStyle = "blue";
-  ctx.lineWidth = 1;
-  ctx.moveTo(x, y)
+  ctx.lineWidth = plotBorderWidth;
+  ctx.moveTo(x, y);
   for (let i=0; i <= 1000; i++) {
     ctx.lineTo(x + steps[i] * scale, y - shears[i] * graphScale * scale)
   }
-  ctx.lineTo(x + steps[PRECISION] * scale, y)
+  ctx.lineTo(x + steps[PRECISION] * scale, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.lineWidth = plotInfillWidth;
   for (let i = 0; i <= 1000; i++) {
-    if (i%50 == 0) {
+    if (i%60 == 20) {
       ctx.moveTo(x+steps[i] * scale, y-shears[i] * graphScale * scale)
       ctx.lineTo(x+steps[i] * scale, y)
     }
@@ -166,14 +174,17 @@ function drawShears(ctx, x, y, steps, shears, graphScale) {
 function drawTensions(ctx, x, y, steps, tensions, graphScale) {
   ctx.beginPath();
   ctx.strokeStyle = "green";
-  ctx.lineWidth = 1;
-  ctx.moveTo(x, y)
+  ctx.lineWidth = plotBorderWidth;
+  ctx.moveTo(x, y);
   for (let i = 0; i <= 1000; i++) {
     ctx.lineTo(x + steps[i] * scale, y - tensions[i] * graphScale * scale)
   }
-  ctx.lineTo(x+steps[PRECISION] * scale, y)
+  ctx.lineTo(x+steps[PRECISION] * scale, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.lineWidth = plotInfillWidth;
   for (let i = 0; i <= 1000; i++) {
-    if (i%50 == 0) {
+    if (i%60 == 40) {
       ctx.moveTo(x+steps[i] * scale, y-tensions[i] * graphScale * scale)
       ctx.lineTo(x+steps[i] * scale, y)
     }
@@ -218,8 +229,8 @@ function drawSystem() {
   }
 
   // point loads
-  for (let i = 0; i < forces.length; i++) {
-    drawArrow(ctx, DEF_X + forces[i].distance * scale, DEF_Y, forces[i].force, forces[i].angle - Math.PI / 2);
+  for (let i = 0; i < loadsList.length; i++) {
+    drawArrow(ctx, DEF_X + loadsList[i].distance * scale, DEF_Y, loadsList[i].loadValue, loadsList[i].angle - Math.PI / 2);
   }
 
   // shear reactions

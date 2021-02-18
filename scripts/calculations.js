@@ -19,10 +19,10 @@ function singleBeamVertical() {
     return false;
   } 
 
-  for (let i = 0; i < forces.length; i++) {
-    forces[i].updateLoad(loadBox[i].value, distanceBox[i].value, angleBox[i].value, loadTypeBox[i].value)
-    calculateShearAndMomentReactions(beam.leftSupport, beam.rightSupport, beam.length, forces[i].verticalForce, forces[i].distance);
-    calculateTensionReactions(beam.leftSupport, beam.rightSupport, beam.length, forces[i].horizontalForce, forces[i].distance);
+  for (let i = 0; i < loadsList.length; i++) {
+    loadsList[i].updateLoad(loadBox[i].value, distanceBox[i].value, angleBox[i].value, loadTypeBox[i].value)
+    calculateShearAndMomentReactions(beam.leftSupport, beam.rightSupport, beam.length, loadsList[i].verticalLoad, loadsList[i].distance);
+    calculateTensionReactions(beam.leftSupport, beam.rightSupport, beam.length, loadsList[i].horizontalLoad, loadsList[i].distance);
     beam.leftReactions.shear += leftReaction.shear;
     beam.rightReactions.shear += rightReaction.shear;
     beam.leftReactions.tension += leftReaction.tension;
@@ -52,10 +52,10 @@ function singleBeamVertical() {
 function calculateMoments(forceIndex, left) {
   for (let i = 0; i <= PRECISION; i++) {
     let dist = beam.steps[i];
-    if (dist <= forces[forceIndex].distance) {
+    if (dist <= loadsList[forceIndex].distance) {
       beam.moments[i] += (left.shear * dist / MULTIPLIER);
     } else {
-      beam.moments[i] += ((left.shear * dist - forces[forceIndex].verticalForce * (dist - forces[forceIndex].distance)) / MULTIPLIER);
+      beam.moments[i] += ((left.shear * dist - loadsList[forceIndex].verticalLoad * (dist - loadsList[forceIndex].distance)) / MULTIPLIER);
     }
   }
 }
@@ -63,10 +63,10 @@ function calculateMoments(forceIndex, left) {
 function calculateShears(forceIndex, left) {
   for (let i = 0; i <= PRECISION; i++) {
     let dist = beam.steps[i];
-    if (dist <= forces[forceIndex].distance) {
+    if (dist <= loadsList[forceIndex].distance) {
       beam.shears[i] += left.shear;
     } else {
-      beam.shears[i] += left.shear - forces[forceIndex].verticalForce; 
+      beam.shears[i] += left.shear - loadsList[forceIndex].verticalLoad; 
     }
   }
 }
@@ -74,10 +74,10 @@ function calculateShears(forceIndex, left) {
 function calculateTensions(forceIndex, left) {
   for (let i = 0; i <= PRECISION; i++) {
     let dist = beam.steps[i];
-    if (dist <= forces[forceIndex].distance) {
+    if (dist <= loadsList[forceIndex].distance) {
       beam.tensions[i] += (-left.tension);
     } else {
-      beam.tensions[i] += - (left.tension + forces[forceIndex].horizontalForce); 
+      beam.tensions[i] += - (left.tension + loadsList[forceIndex].horizontalLoad); 
     }
   }
 }

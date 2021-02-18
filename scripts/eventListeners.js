@@ -3,12 +3,16 @@ lengthBox.addEventListener("change", () => {
   const lengthValue = lengthBox.value;
   if ((lengthValue == '') || (parseFloat(lengthValue) < 0)) {
     lengthBox.value = 1;
-    distanceBox.max = 1;
-    distanceBox.value = 1;
+    for (let i = 0; i < loadsList.length; i++) {
+      distanceBox[i].max = 1;
+      distanceBox[i].value = 1;
+    }
   } else {
-    distanceBox.max = lengthValue;
-    if (parseFloat(distanceBox.value) > parseFloat(lengthValue)) {
-      distanceBox.value = lengthValue;
+    for (let i = 0; i < loadsList.length; i++) {
+      distanceBox[i].max = lengthValue;
+      if (parseFloat(distanceBox[i].value) > parseFloat(lengthValue)) {
+        distanceBox[i].value = lengthValue;
+      }
     }
   }
   
@@ -86,3 +90,30 @@ canv.addEventListener("wheel", doEverything);
 canv.addEventListener("mousedown", startPan);
 canv.addEventListener("mouseleave", endPan);
 canv.addEventListener("mouseup", endPan);
+
+function updateLoadValue(index) {
+  if (loadBox[index].value == ''){
+    loadBox[index].value = 0;
+  }
+  doEverything();
+}
+
+function updateLoadDistance(index) {
+  const lengthValue = parseFloat(lengthBox.value);
+  const distanceValue = parseFloat(distanceBox[index].value);
+  if (distanceValue > lengthValue) {
+    distanceBox[index].value = lengthValue;
+  } else if ((distanceValue < 0) || (distanceValue == '')) {
+    distanceBox[index].value = 0;
+  }
+  doEverything();
+}
+
+function updateLoadAngle(index) {
+  if ((angleBox[index].value == '') || (angleBox[index].value < 0)) {
+    angleBox[index].value = 0;
+  } else if (angleBox[index].value > 180) {
+    angleBox[index].value = 180;
+  }
+  doEverything();
+}

@@ -5,10 +5,10 @@ const lengthBox = document.getElementById('length');
 // Load
 const loadsListElement = document.getElementById('loads-list');
 const addNewLoadButton = document.getElementById('add-new-load');
-let loadTypeBox = document.getElementsByClassName('load-types');
-let loadBox = document.getElementsByClassName('load-values');
-let distanceBox = document.getElementsByClassName('load-distances');
-let angleBox = document.getElementsByClassName('load-angles');
+const loadTypeBox = document.getElementsByClassName('load-types');
+const loadBox = document.getElementsByClassName('load-values');
+const distanceBox = document.getElementsByClassName('load-distances');
+const angleBox = document.getElementsByClassName('load-angles');
 // Plots
 const graphScaleBox = document.getElementById('graph_scale');
 const shearsCheckbox = document.getElementById('graph_shears');

@@ -1,6 +1,6 @@
 let beam;
 
-let forces = [];
+let loadsList = [];
 
 function createBeam() {
   beam = {
@@ -34,76 +34,49 @@ function createBeam() {
 class Load {
   constructor(value, distance, angle, loadType) {
     this.id = loadsListElement.children.length - 1;
-    this.force = parseFloat(value);
+    this.loadValue = parseFloat(value);
     this.distance = parseFloat(distance);
     this.angle = parseFloat(angle * Math.PI / 180);
     this.loadType = loadType;
-    this.verticalForce = this.force * Math.sin(this.angle);
-    this.horizontalForce = this.force * Math.cos(this.angle);
+    this.verticalLoad = this.loadValue * Math.sin(this.angle);
+    this.horizontalLoad = this.loadValue * Math.cos(this.angle);
   }
 
   updateLoad(value, distance, angle, loadType) {
     this.id = loadsListElement.children.length - 1;
-    this.force = parseFloat(value);
+    this.loadValue = parseFloat(value);
     this.distance = parseFloat(distance);
     this.angle = parseFloat(angle * Math.PI / 180);
     this.loadType = loadType;
-    this.verticalForce = this.force * Math.sin(this.angle);
-    this.horizontalForce = this.force * Math.cos(this.angle);
+    this.verticalLoad = this.loadValue * Math.sin(this.angle);
+    this.horizontalLoad = this.loadValue * Math.cos(this.angle);
   }
 }
 
 function addNewLoad() {
-  console.log(forces)
-  forces[loadsListElement.children.length - 1] = new Load(10, 10, 90, 'concentratedLoad');
-  console.log(forces)
   let id = loadsListElement.children.length - 1;
+  // let id = Date.now() - 1613323023105;
+
+  loadsList[id] = new Load(0, 0, 90, 'concentratedLoad');
   
-  let loadId = `<div>${id}.</div>`;
+  let loadId = `<div>${id+1}.</div>`;
   let loadType = 
     `<div>
-    <select class="load-types" name="loadType${id}" id="loadType${id}">
+    <select class="load-types" name="loadType${id}" id="loadType${id}" value="${loadsList[id].loadType}">
       <option value="concentratedLoad">Concentrated load</option>
       <option value="moment">Moment</option>
       <option value="fixed">Uniformly distributed</option>
     </select>
   </div>`;
-  let loadValue = `<div><input type="number" class="load-values" onchange="updateLoadValue('${id}')" name="load${id}" id="load${id}" value="0" /></div>`;
-  let loadDistance = `<div><input type="number" class="load-distances" onchange="updateLoadDistance('${id}')" name="distance${id}" id="distance${id}" value="0" min="0" step="1" /></div>`;
-  let loadAngle = `<div><input type="number" class="load-angles" onchange="updateLoadAngle('${id}')" name="angle${id}" id="angle${id}" value="90" min="0" max="180" step="1" /></div>`;
+  let loadValue = `<div><input type="number" class="load-values" onchange="updateLoadValue('${id}')" name="load${id}" id="load${id}" value="${loadsList[id].loadValue}" /></div>`;
+  let loadDistance = `<div><input type="number" class="load-distances" onchange="updateLoadDistance('${id}')" name="distance${id}" id="distance${id}" value="${loadsList[id].distance}" min="0" step="1" /></div>`;
+  let loadAngle = `<div><input type="number" class="load-angles" onchange="updateLoadAngle('${id}')" name="angle${id}" id="angle${id}" value="${loadsList[id].angle*180/Math.PI}" min="0" max="180" step="1" /></div>`;
   let loadDeleteIcon = `<div id="delete${id}">X</div>`
 
   let listItem = `<li class="loadSettings">${loadId}${loadType}${loadValue}${loadDistance}${loadAngle}${loadDeleteIcon}</li>`;
   
   // loadsListElement.appendChild(listItem);
   loadsListElement.innerHTML += listItem;
-}
-
-function updateLoadValue(index) {
-  if (loadBox[index].value == ''){
-    loadBox[index].value = 0;
-  }
-  doEverything();
-}
-
-function updateLoadDistance(index) {
-  const lengthValue = parseFloat(lengthBox.value);
-  const distanceValue = parseFloat(distanceBox[index].value);
-  if (distanceValue > lengthValue) {
-    distanceBox[index].value = lengthValue;
-  } else if ((distanceValue < 0) || (distanceValue == '')) {
-    distanceBox[index].value = 0;
-  }
-  doEverything();
-}
-
-function updateLoadAngle(index) {
-  if ((angleBox[index].value == '') || (angleBox[index].value < 0)) {
-    angleBox[index].value = 0;
-  } else if (angleBox[index].value > 180) {
-    angleBox[index].value = 180;
-  }
-  doEverything();
 }
 
 
