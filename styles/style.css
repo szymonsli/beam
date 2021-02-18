@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+}
+
+h3 {
+  margin-top: 10px;
+}
+
+/* INPUT STYLES */
+input, select, button {
+  margin: 3px;
+  padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid rgb(59, 59, 59);
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+}
+
+input[type="number"]:focus, select:focus {
+  border: 1px solid rgb(65, 202, 65);
+  box-shadow: 0 0 10px rgb(65, 202, 65);
+}
+
+input {
+  width: 90px;
+  padding-right: 0 !important;
+}
+
+select {
+  width: 99px;
+}
+
+.load-types {
+  width: 100%;
+}
+
+input[type="checkbox"] {
+  height: 31px;
+}
+
+/* SIDEBARS */
+
+.leftSidebar, .rightSidebar {
+  width: 270px;
+  height: 100vh;
+  background-color: rgb(186, 201, 219);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  box-shadow: 0 0 15px black;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+}
+
+.leftSidebar {
+  left: 0;
+  border-right: 1px solid rgb(59, 59, 59);
+}
+
+.rightSidebar {
+  right: 0;
+  border-left: 1px solid rgb(59, 59, 59);
+}
+
+.bottomBar {
+  padding: 0 15px;
+  height: 300px;
+  width: calc(100vw - 572px);
+  background-color: rgb(186, 201, 219);
+  box-shadow: 0 0 15px black;
+  position: absolute;
+  bottom: 0;
+  left: 271px;
+  z-index: 1;
+  overflow-y: scroll;
+}
+
+.loads {
+  width: 100%;
+}
+
+.loads li {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: baseline;
+  border-bottom: 1px solid black;
+}
+
+.loads li div {
+  width: 140px;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebarInner {
+  padding: 40px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.results div {
+  padding: 10px 0;
+}
+
+.settings div{
+  width: 240px;
+}
+.two-columns{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.visualisation {
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
+
+#vis {
+  background-color: rgb(230, 230, 230);
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Beam</title>
+
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- Visualisation -->
+    <div class="visualisation">
+      <canvas id="vis" width="1490" height="1080"></canvas>
+    </div>
+    <!-- End Visualisation -->
+
+    <!-- Settings -->
+    <div class="leftSidebar">
+      <div class="settings sidebarInner">
+        <h3>Beam settings</h3>
+        <div class="two-columns">
+          Left support
+          <select name="left" id="leftSupport">
+            <option value="hinged">Hinged</option>
+            <option value="roller">Roller</option>
+            <option value="fixed">Fixed</option>
+            <option value="free">Free end</option>
+          </select>
+        </div>
+        <div class="two-columns">
+          Right support
+          <select name="right" id="rightSupport">
+            <option value="hinged">Hinged</option>
+            <option value="roller">Roller</option>
+            <option value="fixed">Fixed</option>
+            <option value="free">Free end</option>
+          </select>
+        </div>
+        <div class="two-columns">
+          Length [cm]
+          <input type="number" name="length" id="length" value="100" min="1" />
+        </div>
+
+        <h3>Plots settings</h3>
+        <div class="two-columns">
+          Plot scale
+          <input
+            type="number"
+            name="graph_scale"
+            id="graph_scale"
+            value="1"
+            min="0.1"
+            step="0.1"
+          />
+        </div>
+        <div class="two-columns">
+          Shears
+          <input
+            type="checkbox"
+            name="graph_shears"
+            id="graph_shears"
+            checked
+          />
+        </div>
+        <div class="two-columns">
+          Tensions
+          <input
+            type="checkbox"
+            name="graph_tensions"
+            id="graph_tensions"
+            checked
+          />
+        </div>
+        <div class="two-columns">
+          Moments
+          <input
+            type="checkbox"
+            name="graph_moments"
+            id="graph_moments"
+            checked
+          />
+        </div>
+      </div>
+    </div>
+    <!-- End Settings -->
+
+    <!-- Results -->
+    <div class="rightSidebar">
+      <div class="results sidebarInner">
+        <div id="leftReactionShear"></div>
+        <div id="rightReactionShear"></div>
+        <div id="leftReactionTension"></div>
+        <div id="rightReactionTension"></div>
+        <div id="leftReactionMoment"></div>
+        <div id="rightReactionMoment"></div>
+      </div>
+    </div>
+    <!-- End Results -->
+
+    <!-- Loads -->
+    <div class="bottomBar">
+      <div class="two-columns">
+        <h3>Loads settings</h3>
+        <button id="add-new-load">Add new load</button>
+      </div>
+      <div class="loads">
+        <ul id="loads-list">
+          <li>
+            <div>ID</div>
+            <div>Type</div>
+            <div>Value [kN]</div>
+            <div>Distance [cm]</div>
+            <div>Angle [cm]</div>
+            <div>Delete</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- End Loads -->
+
+    <script src="scripts/elements.js"></script>
+    <script src="scripts/beam.js"></script>
+    <script src="scripts/reactions.js"></script>
+    <script src="scripts/calculations.js"></script>
+    <script src="scripts/canvas.js"></script>
+    <script src="scripts/eventListeners.js"></script>
+  </body>
+</html>
