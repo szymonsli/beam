@@ -75,8 +75,7 @@ function addNewLoad() {
 
   let listItem = `<li class="loadSettings">${loadId}${loadType}${loadValue}${loadDistance}${loadAngle}${loadDeleteIcon}</li>`;
   
-  // loadsListElement.appendChild(listItem);
-  loadsListElement.innerHTML += listItem;
+  loadsListElement.insertAdjacentHTML('beforeend', listItem);
 }
 
 
