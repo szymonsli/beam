@@ -30,6 +30,13 @@ const SUPPORT = {
   FREE: 'free',
   ROLLER: 'roller'
 };
+
+const LOAD_TYPES = {
+  CONCENTRATED: 'concentratedLoad',
+  MOMENT: 'moment',
+  UNIFORM: 'uniformlyDistributed'
+}
+
 const MULTIPLIER = 100;
 const PRECISION = 1000;
 const DEF_X = window.innerWidth/2 - 100;
