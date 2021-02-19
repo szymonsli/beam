@@ -92,7 +92,7 @@ function drawBeam(ctx, x, y, length) {
 }
 
 //DRAW FORCES
-function drawArrow(ctx, x, y, force, angle) {
+function drawArrow(ctx, x, y, force, angle, isScaled=true, color="black") {
   let dir;
   if (force >= 0) {
     dir = 1;
@@ -104,8 +104,8 @@ function drawArrow(ctx, x, y, force, angle) {
   ctx.rotate(angle);
   ctx.beginPath();
   ctx.lineWidth = 3;
-  ctx.strokeStyle = "black";
-  ctx.fillStyle = "black";
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
   ctx.moveTo(0, 0 - 4 * dir);
   ctx.lineTo(0 - 5, 0 - 15 * dir);
   ctx.lineTo(0 + 5, 0 - 15 * dir);
@@ -113,29 +113,72 @@ function drawArrow(ctx, x, y, force, angle) {
   ctx.fill();
   ctx.beginPath()
   ctx.moveTo(0,  0 - 15 * dir);
-  ctx.lineTo(0, 0 - Math.max(force * dir, 40) * dir);
+  if (isScaled) {
+    ctx.lineTo(0, 0 - Math.max(force * dir, 40) * dir);
+  } else {
+    ctx.lineTo(0, 0 - 40 * dir);
+  }
   ctx.stroke()
 
   ctx.rotate(-angle);
   
-  let dXText = -Math.max(force * dir, 40) * Math.sin(-angle) + 10;
-  let dYText = -Math.max(force * dir, 40) * Math.cos(-angle) - 10;
-  
-  ctx.font = "16px Arial";
-  ctx.fillStyle = "black";
-  ctx.fillText(`${Math.abs(Math.round(force * 1000) / 1000)} kN`, (dXText + 5) * dir, dYText * dir);
+  let dXText;
+  let dYText;
+  if (isScaled) {
+    dXText = -Math.max(force * dir, 40) * Math.sin(-angle) + 10;
+    dYText = -Math.max(force * dir, 40) * Math.cos(-angle) - 10;
+  } else {
+    dXText = -40 * Math.sin(-angle) + 10;
+    dYText = -40 * Math.cos(-angle) - 10;
+  }
+  ctx.font = "16px Lato";
+  ctx.fillStyle = color;
+  ctx.fillText(`${Math.abs(Math.round(force * 1000) / 1000)} kN`, (dXText)*dir, dYText * dir);
   ctx.translate(-x, -y);
-
 }
 
-// DRAW GRAPHS
-function drawMoments(ctx, x, y, steps, shears, graphScale) {
+function drawMomentArrow(ctx, x, y, force, drawLine, color) {
+  let dir;
+  if (force >= 0) {
+    dir = 1;
+  } else {
+    dir = -1;
+  }
+  ctx.beginPath();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.arc(x, y, 30, Math.PI*5/4, Math.PI *7/4, false);
+  ctx.stroke();
+
+  ctx.beginPath();
+    ctx.moveTo(x + 30*Math.sin(Math.PI/4) * dir, y - 30*Math.sin(Math.PI/4));
+    ctx.lineTo(x + (30*Math.sin(Math.PI/4) - 3) * dir, y - 30*Math.sin(Math.PI/4) - 8);
+    ctx.lineTo(x + (30*Math.sin(Math.PI/4) - 8) * dir, y - 30*Math.sin(Math.PI/4) - 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+  if (drawLine) {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - 30*Math.sin(Math.PI/4) * dir, y - 30*Math.sin(Math.PI/4));
+    ctx.stroke();
+  }
+
+  ctx.font = "16px Lato";
+  ctx.fillStyle = color;
+  ctx.fillText(`${Math.abs(Math.round(force * 1000) / 1000)} kNm`, x, y-40);
+}
+
+// DRAW PLOTS
+function drawMoments(ctx, x, y, steps, shears, plotScale) {
   ctx.beginPath();
   ctx.strokeStyle = "red";
   ctx.lineWidth = plotBorderWidth;
   ctx.moveTo(x, y);
   for (let i=0; i <= 1000; i++) {
-    ctx.lineTo(x + steps[i] * scale, y + (beam.leftReactions.moment + shears[i]) * graphScale * scale)
+    ctx.lineTo(x + steps[i] * scale, y + (beam.leftReactions.moment + shears[i]) * plotScale * scale)
   }
   ctx.lineTo(x + steps[PRECISION] * scale, y);
   ctx.stroke();
@@ -143,20 +186,20 @@ function drawMoments(ctx, x, y, steps, shears, graphScale) {
   ctx.lineWidth = plotInfillWidth;
   for (let i = 0; i <= 1000; i++) {
     if (i%60 == 0) {
-      ctx.moveTo(x+steps[i] * scale, y + (beam.leftReactions.moment + shears[i]) * graphScale * scale)
+      ctx.moveTo(x+steps[i] * scale, y + (beam.leftReactions.moment + shears[i]) * plotScale * scale)
       ctx.lineTo(x+steps[i] * scale, y)
     }
   }
   ctx.stroke();
 }
 
-function drawShears(ctx, x, y, steps, shears, graphScale) {
+function drawShears(ctx, x, y, steps, shears, plotScale) {
   ctx.beginPath();
   ctx.strokeStyle = "blue";
   ctx.lineWidth = plotBorderWidth;
   ctx.moveTo(x, y);
   for (let i=0; i <= 1000; i++) {
-    ctx.lineTo(x + steps[i] * scale, y - shears[i] * graphScale * scale)
+    ctx.lineTo(x + steps[i] * scale, y - shears[i] * plotScale * scale)
   }
   ctx.lineTo(x + steps[PRECISION] * scale, y);
   ctx.stroke();
@@ -164,20 +207,20 @@ function drawShears(ctx, x, y, steps, shears, graphScale) {
   ctx.lineWidth = plotInfillWidth;
   for (let i = 0; i <= 1000; i++) {
     if (i%60 == 20) {
-      ctx.moveTo(x+steps[i] * scale, y-shears[i] * graphScale * scale)
+      ctx.moveTo(x+steps[i] * scale, y-shears[i] * plotScale * scale)
       ctx.lineTo(x+steps[i] * scale, y)
     }
   }
   ctx.stroke();
 }
 
-function drawTensions(ctx, x, y, steps, tensions, graphScale) {
+function drawTensions(ctx, x, y, steps, tensions, plotScale) {
   ctx.beginPath();
   ctx.strokeStyle = "green";
   ctx.lineWidth = plotBorderWidth;
   ctx.moveTo(x, y);
   for (let i = 0; i <= 1000; i++) {
-    ctx.lineTo(x + steps[i] * scale, y - tensions[i] * graphScale * scale)
+    ctx.lineTo(x + steps[i] * scale, y - tensions[i] * plotScale * scale)
   }
   ctx.lineTo(x+steps[PRECISION] * scale, y);
   ctx.stroke();
@@ -185,23 +228,26 @@ function drawTensions(ctx, x, y, steps, tensions, graphScale) {
   ctx.lineWidth = plotInfillWidth;
   for (let i = 0; i <= 1000; i++) {
     if (i%60 == 40) {
-      ctx.moveTo(x+steps[i] * scale, y-tensions[i] * graphScale * scale)
+      ctx.moveTo(x+steps[i] * scale, y-tensions[i] * plotScale * scale)
       ctx.lineTo(x+steps[i] * scale, y)
     }
   }
   ctx.stroke();
 }
 
+
 // DRAW ENTIRE BEAM WITH SUPPORTS
 function drawSystem() {
-  let graphScale = parseFloat(graphScaleBox.value);
-  
+  let plotScale = parseFloat(graphScaleBox.value);
+  // pan
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canv.width, canv.height);
   ctx.translate(pan.offset.x, pan.offset.y);
 
+  // beam
   drawBeam(ctx, DEF_X, DEF_Y, beam.length);
 
+  // supports
   if (beam.leftSupport == SUPPORT.HINGED) {
     drawHingedSupport(ctx, DEF_X, DEF_Y);
   } else if (beam.leftSupport == SUPPORT.ROLLER) {
@@ -209,7 +255,6 @@ function drawSystem() {
   } else if (beam.leftSupport == SUPPORT.FIXED) {
     drawLeftFixedSupport(ctx, DEF_X, DEF_Y);
   }
-
   if (beam.rightSupport == SUPPORT.HINGED) {
     drawHingedSupport(ctx, DEF_X + beam.length * scale, DEF_Y);
   } else if (beam.rightSupport == SUPPORT.ROLLER) {
@@ -218,14 +263,15 @@ function drawSystem() {
     drawRightFixedSupport(ctx, DEF_X + beam.length * scale, DEF_Y);
   }
 
+  // plots
   if (shearsCheckbox.checked) {
-    drawShears(ctx, DEF_X, DEF_Y, beam.steps, beam.shears, graphScale);
+    drawShears(ctx, DEF_X, DEF_Y, beam.steps, beam.shears, plotScale);
   }
   if (momentsCheckbox.checked) {
-    drawMoments(ctx, DEF_X, DEF_Y, beam.steps, beam.moments, graphScale);
+    drawMoments(ctx, DEF_X, DEF_Y, beam.steps, beam.moments, plotScale);
   }
   if (tensionsCheckbox.checked) {
-    drawTensions(ctx, DEF_X, DEF_Y, beam.steps, beam.tensions, graphScale);
+    drawTensions(ctx, DEF_X, DEF_Y, beam.steps, beam.tensions, plotScale);
   }
 
   // point loads
@@ -234,23 +280,47 @@ function drawSystem() {
   }
 
   // shear reactions
-  if (beam.leftReactions.shear >= 0) {
-    drawArrow(ctx, DEF_X, DEF_Y + 30, beam.leftReactions.shear, Math.PI);
-  } else {
-    drawArrow(ctx, DEF_X, DEF_Y - 30, beam.leftReactions.shear, Math.PI);
+  if (beam.leftSupport != SUPPORT.FREE) {
+    if (beam.leftReactions.shear >= 0) {
+      drawArrow(ctx, DEF_X-80, DEF_Y + 30, beam.leftReactions.shear, Math.PI, false, "blue");
+    } else {
+      drawArrow(ctx, DEF_X-80, DEF_Y + 70, beam.leftReactions.shear, Math.PI, false, "blue");
+    }
   }
-
-  if (beam.rightReactions.shear >= 0) {
-    drawArrow(ctx, DEF_X + beam.length * scale, DEF_Y + 30, beam.rightReactions.shear, Math.PI);
-  } else {
-    drawArrow(ctx, DEF_X + beam.length * scale, DEF_Y - 30, beam.rightReactions.shear, Math.PI);
+  if (beam.rightSupport != SUPPORT.FREE) {
+    if (beam.rightReactions.shear >= 0) {
+      drawArrow(ctx, DEF_X + beam.length * scale + 80, DEF_Y + 30, beam.rightReactions.shear, Math.PI, false, "blue");
+    } else {
+      drawArrow(ctx, DEF_X + beam.length * scale + 80, DEF_Y + 70, beam.rightReactions.shear, Math.PI, false, "blue");
+    }
   }
 
   // tension reactions
-  drawArrow(ctx, DEF_X - 50, DEF_Y, beam.leftReactions.tension * -1, Math.PI/2);
-  drawArrow(ctx, DEF_X + 50 + beam.length * scale, DEF_Y, beam.rightReactions.tension * -1, Math.PI/2);
+  if (beam.leftSupport == SUPPORT.HINGED || beam.leftSupport == SUPPORT.FIXED) {
+    if (beam.leftReactions.tension >= 0) {
+      drawArrow(ctx, DEF_X - 60, DEF_Y, beam.leftReactions.tension, -Math.PI/2, false, "green");
+    } else {
+      drawArrow(ctx, DEF_X - 100, DEF_Y, beam.leftReactions.tension, -Math.PI/2, false, "green");
+    }
+  }
+  if (beam.rightSupport == SUPPORT.HINGED || beam.rightSupport == SUPPORT.FIXED) {
+    if (beam.rightReactions.tension >= 0) {
+      drawArrow(ctx, DEF_X + 100 + beam.length * scale, DEF_Y, beam.rightReactions.tension, -Math.PI/2, false, "green");
+    } else {
+      drawArrow(ctx, DEF_X + 60 + beam.length * scale, DEF_Y, beam.rightReactions.tension, -Math.PI/2, false, "green");
+    }
+  }
+
+  // moment reactions
+  if (beam.leftSupport == SUPPORT.FIXED) {
+    drawMomentArrow(ctx, DEF_X - 80, DEF_Y - 30, beam.leftReactions.moment, false, "red");
+  }
+  if (beam.rightSupport == SUPPORT.FIXED) {
+    drawMomentArrow(ctx, DEF_X + 80 + beam.length * scale, DEF_Y - 30, -beam.rightReactions.moment, false, "red");
+  }
 }
 
+//NAVIGATION FUNCTIONS
 function startPan(e) {
 	canv.addEventListener("mousemove", trackMouse);
 	canv.addEventListener("mousemove", drawSystem);
