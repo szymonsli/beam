@@ -1,6 +1,6 @@
 function singleBeamVertical() {
-  createBeam();
-  
+  // createBeam();
+  beam = new Beam();
   leftReactionShearDiv.innerHTML = '';
   rightReactionShearDiv.innerHTML = '';
   leftReactionTensionDiv.innerHTML = '';
